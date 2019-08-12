@@ -2,8 +2,9 @@
 
 [![view on npm](http://img.shields.io/npm/v/express-versions.svg)](https://www.npmjs.org/package/express-versions)
 [![view on npm](http://img.shields.io/npm/l/express-versions.svg)](https://www.npmjs.org/package/express-versions)
-[![npm module downloads](http://img.shields.io/npm/dt/express-version-request.svg)](https://www.npmjs.org/package/express-versions)
-
+[![npm module downloads](http://img.shields.io/npm/dt/express-versions.svg)](https://www.npmjs.org/package/express-versions)
+[![npm module downloads](http://img.shields.io/npm/dt/express-versions.svg)](https://www.npmjs.org/package/express-versions)
+[![Build Status](https://travis-ci.com/linerocks/express-version-request.svg?branch=master)](https://travis-ci.com/linerocks/express-version-request)
 
 ## What is this?
 
