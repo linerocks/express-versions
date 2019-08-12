@@ -1,7 +1,7 @@
 'use strict'
 
 const test = require('ava')
-const versionRequest = require('../index')
+const { versionRequest } = require('../index')
 
 test('it pads a shorter version with two zeros', t => {
   t.is(versionRequest.formatVersion('2'), '2.0.0')

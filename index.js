@@ -1,5 +1,8 @@
 'use strict'
 
+const semver = require('semver')
+const { RouteVersionUnmatchedError } = require('./errors')
+
 class versionRequest {
   static setVersion (version) {
     return (req, res, next) => {
@@ -8,10 +11,20 @@ class versionRequest {
     }
   }
 
-  static setVersionByHeader (headerName) {
+  static setVersionByURI (versionName = 'v') {
     return (req, res, next) => {
-      if (req && req.headers) {
-        const version = (headerName && req.headers[headerName.toLowerCase()]) || req.headers['x-api-version']
+      if (req) {
+        const r = new RegExp(`/${versionName}(\\d+.?\\d*.?\\d*.?\\d*.?\\d*)/`)
+
+        let urlEndpoint = req.originalUrl.endsWith('/')
+          ? req.originalUrl
+          : req.originalUrl + '/'
+        urlEndpoint = urlEndpoint.startsWith('/')
+          ? urlEndpoint
+          : '/' + urlEndpoint
+
+        const version = urlEndpoint.match(r)[1]
+
         req.version = this.formatVersion(version)
       }
 
@@ -19,10 +32,28 @@ class versionRequest {
     }
   }
 
-  static setVersionByQueryParam (queryParam, options = {removeQueryParam: false}) {
+  static setVersionByHeader (headerName) {
+    return (req, res, next) => {
+      if (req && req.headers) {
+        const version =
+          (headerName && req.headers[headerName.toLowerCase()]) ||
+          req.headers['x-api-version']
+        req.version = this.formatVersion(version)
+      }
+
+      next()
+    }
+  }
+
+  static setVersionByQueryParam (
+    queryParam,
+    options = { removeQueryParam: false }
+  ) {
     return (req, res, next) => {
       if (req && req.query) {
-        const version = (queryParam && req.query[queryParam.toLowerCase()]) || req.query['api-version']
+        const version =
+          (queryParam && req.query[queryParam.toLowerCase()]) ||
+          req.query['api-version']
         if (version !== undefined) {
           req.version = this.formatVersion(version)
           if (options && options.removeQueryParam === true) {
@@ -51,14 +82,17 @@ class versionRequest {
             for (let i of params.split(',')) {
               const keyValue = i.split('=')
               if (typeof keyValue === 'object' && keyValue[0] && keyValue[1]) {
-                paramMap[this.removeWhitespaces(keyValue[0]).toLowerCase()] = this.removeWhitespaces(keyValue[1])
+                const r = this.removeWhitespaces(keyValue[0]).toLowerCase()
+                paramMap[r] = this.removeWhitespaces(keyValue[1])
               }
             }
             req.version = this.formatVersion(paramMap.version)
           }
 
           if (req.version === undefined) {
-            req.version = this.formatVersion(this.setVersionByAcceptFormat(req.headers))
+            req.version = this.formatVersion(
+              this.setVersionByAcceptFormat(req.headers)
+            )
           }
         }
       }
@@ -112,4 +146,41 @@ class versionRequest {
   }
 }
 
-module.exports = versionRequest
+class versionRouter {
+  static route (versionsMap = new Map(), options = new Map()) {
+    return (req, res, next) => {
+      for (let [versionKey, versionRouter] of versionsMap) {
+        if (this.checkVersionMatch(req.version, versionKey)) {
+          return versionRouter(req, res, next)
+        }
+      }
+
+      const defaultRoute = this.getDefaultRoute(versionsMap)
+      if (defaultRoute) {
+        return defaultRoute(req, res, next)
+      }
+
+      return next(
+        new RouteVersionUnmatchedError(
+          `${req.version} doesn't match any versions`
+        )
+      )
+    }
+  }
+
+  static checkVersionMatch (requestedVersion, routeVersion) {
+    return (
+      semver.valid(requestedVersion) &&
+      semver.satisfies(requestedVersion, routeVersion)
+    )
+  }
+
+  static getDefaultRoute (options = new Map()) {
+    return options.get('default')
+  }
+}
+
+module.exports = {
+  versionRouter: versionRouter,
+  versionRequest: versionRequest
+}

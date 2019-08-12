@@ -1,18 +1,18 @@
 {
-  "name": "express-version-request",
-  "version": "1.7.0",
-  "description": "versions an incoming request to Express based on header or URL",
+  "name": "express-versions",
+  "version": "0.0.0",
+  "description": "Express REST API versioning library",
   "main": "index.js",
   "scripts": {
-    "lint": "standard && eslint *.js",
-    "test": "yarn lint && ava",
-    "test:watch": "yarn lint && ava --watch",
-    "test:coverage": "yarn run lint && nyc --reporter=lcov ava --tap",
-    "coverage:view": "opn coverage/lcov-report/index.html",
+    "lint": "npx standard && npx eslint *.js",
+    "test": "npx standard && npx ava",
+    "test:watch": "npx lint && npx ava --watch",
+    "test:coverage": "npm run lint && npx --reporter=lcov ava --tap",
+    "coverage:view": "npx opn coverage/lcov-report/index.html",
     "commit": "git-cz",
-    "docs": "yarn run docs:code && yarn run docs:api",
-    "docs:api": "doxdox *.js --layout bootstrap --output docs/index.html",
-    "docs:code": "docco *.js --output docs/code"
+    "docs": "npm run docs:code && npm run docs:api",
+    "docs:api": "npx doxdox *.js --layout bootstrap --output docs/index.html",
+    "docs:code": "npx docco *.js --output docs/code"
   },
   "keywords": [
     "express",
@@ -26,16 +26,19 @@
     "api version",
     "header"
   ],
-  "author": "Liran Tal",
+  "author": "Tirtadwipa Manunggal",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lirantal/express-version-request.git"
+    "url": "git+https://github.com/linerocks/express-versions.git"
   },
   "bugs": {
-    "url": "https://github.com/lirantal/express-version-request/issues"
+    "url": "https://github.com/linerocks/express-versions/issues"
   },
-  "homepage": "https://github.com/lirantal/express-version-request#readme",
+  "homepage": "https://github.com/linerocks/express-versions#readme",
+  "dependencies": {
+    "semver": "^6.1.2"
+  },
   "devDependencies": {
     "ava": "^0.25.0",
     "commitizen": "^2.9.5",
@@ -93,9 +96,7 @@
       "security/detect-disable-mustache-escape": "error",
       "security/detect-eval-with-expression": "error",
       "security/detect-no-csrf-before-method-override": "error",
-      "security/detect-non-literal-regexp": "error",
       "security/detect-non-literal-require": "error",
-      "security/detect-object-injection": "error",
       "security/detect-possible-timing-attacks": "error",
       "security/detect-pseudoRandomBytes": "error"
     },

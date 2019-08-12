@@ -1,7 +1,7 @@
 'use strict'
 
 const test = require('ava')
-const versionRequest = require('../index')
+const { versionRequest } = require('../index')
 
 test('it removes whitespaces from a string', t => {
   t.is(versionRequest.removeWhitespaces('a  '), 'a')

@@ -1,7 +1,7 @@
 'use strict'
 
 const test = require('ava')
-const versionRequest = require('../index')
+const { versionRequest } = require('../index')
 const sinon = require('sinon')
 
 test.beforeEach(t => {
@@ -128,10 +128,13 @@ test('we can set a version on the request object by specifying custom http query
 test('custom query param should be deleted from req.query after handling it', t => {
   const versionNumber = '1.0.0'
   const versionParamName = 'my-api-version-param'
-  const options = {removeQueryParam: true}
+  const options = { removeQueryParam: true }
 
   t.context.req.query[versionParamName] = versionNumber
-  const middleware = versionRequest.setVersionByQueryParam(versionParamName, options)
+  const middleware = versionRequest.setVersionByQueryParam(
+    versionParamName,
+    options
+  )
 
   middleware(t.context.req, {}, () => {
     t.is(t.context.req.version, versionNumber)
@@ -141,7 +144,7 @@ test('custom query param should be deleted from req.query after handling it', t 
 
 test('default query param should be deleted from req.query after handling it', t => {
   const versionNumber = '1.0.0'
-  const options = {removeQueryParam: true}
+  const options = { removeQueryParam: true }
 
   t.context.req.query['api-version'] = versionNumber
   const middleware = versionRequest.setVersionByQueryParam(null, options)

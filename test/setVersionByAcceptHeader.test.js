@@ -1,7 +1,7 @@
 'use strict'
 
 const test = require('ava')
-const versionRequest = require('../index')
+const { versionRequest } = require('../index')
 const sinon = require('sinon')
 
 test.beforeEach(t => {
@@ -13,7 +13,8 @@ test.beforeEach(t => {
 test('we can set the version using the Accept header version field', t => {
   const versionNumber = '1.0.0'
 
-  t.context.req.headers['accept'] = 'application/vnd.company+json;version=' + versionNumber
+  t.context.req.headers['accept'] =
+    'application/vnd.company+json;version=' + versionNumber
   const middleware = versionRequest.setVersionByAcceptHeader()
 
   middleware(t.context.req, {}, () => {
@@ -24,7 +25,10 @@ test('we can set the version using the Accept header version field', t => {
 test('we can set the version using the Accept header version field, even if we have multiple parameters', t => {
   const versionNumber = '1.0.0'
 
-  t.context.req.headers['accept'] = 'application/vnd.company+json;param1=1,version=' + versionNumber + ', param3=3'
+  t.context.req.headers['accept'] =
+    'application/vnd.company+json;param1=1,version=' +
+    versionNumber +
+    ', param3=3'
   const middleware = versionRequest.setVersionByAcceptHeader()
 
   middleware(t.context.req, {}, () => {
@@ -35,7 +39,10 @@ test('we can set the version using the Accept header version field, even if we h
 test('we can set the version using the Accept header version field, even if it has funky whitespaces', t => {
   const versionNumber = '1.0.0'
 
-  t.context.req.headers['accept'] = 'application/vnd.company+json; param1=1,      version =' + versionNumber + '  , param3=3'
+  t.context.req.headers['accept'] =
+    'application/vnd.company+json; param1=1,      version =' +
+    versionNumber +
+    '  , param3=3'
   const middleware = versionRequest.setVersionByAcceptHeader()
 
   middleware(t.context.req, {}, () => {
@@ -46,7 +53,10 @@ test('we can set the version using the Accept header version field, even if it h
 test('we can set the version using the Accept header version field, even if it mixes lower- and uppercase characters', t => {
   const versionNumber = '1.0.0'
 
-  t.context.req.headers['accept'] = 'application/vnd.company+json; param1=1,      Version =' + versionNumber + '  , param3=3'
+  t.context.req.headers['accept'] =
+    'application/vnd.company+json; param1=1,      Version =' +
+    versionNumber +
+    '  , param3=3'
   const middleware = versionRequest.setVersionByAcceptHeader()
 
   middleware(t.context.req, {}, () => {
@@ -55,7 +65,8 @@ test('we can set the version using the Accept header version field, even if it m
 })
 
 test('dont set the version if the Accept header has no "version" parameter', t => {
-  t.context.req.headers['accept'] = 'application/vnd.company+json;param1=1, param2=2'
+  t.context.req.headers['accept'] =
+    'application/vnd.company+json;param1=1, param2=2'
   const middleware = versionRequest.setVersionByAcceptHeader()
 
   middleware(t.context.req, {}, () => {
@@ -103,7 +114,8 @@ test('dont set the version if the Accept header if we cant parse it', t => {
 test('we can set the version using the Accept header alternative format 1', t => {
   const versionNumber = '1.0.0'
 
-  t.context.req.headers['accept'] = 'application/vnd.company-v' + versionNumber + '+json'
+  t.context.req.headers['accept'] =
+    'application/vnd.company-v' + versionNumber + '+json'
   const middleware = versionRequest.setVersionByAcceptHeader()
 
   middleware(t.context.req, {}, () => {
@@ -114,7 +126,8 @@ test('we can set the version using the Accept header alternative format 1', t =>
 test('we can set the version using the Accept header alternative format 2', t => {
   const versionNumber = '1.0.0'
 
-  t.context.req.headers['accept'] = 'application/vnd.company.v' + versionNumber + '+json'
+  t.context.req.headers['accept'] =
+    'application/vnd.company.v' + versionNumber + '+json'
   const middleware = versionRequest.setVersionByAcceptHeader()
 
   middleware(t.context.req, {}, () => {
@@ -125,7 +138,9 @@ test('we can set the version using the Accept header alternative format 2', t =>
 test('we can set the version using the Accept header alternative format, even if it has whitespaces', t => {
   const versionNumber = '1.0.0'
 
-  const headers = { accept: 'application/ vnd.company -v' + versionNumber + ' + json' }
+  const headers = {
+    accept: 'application/ vnd.company -v' + versionNumber + ' + json'
+  }
   const resultingVersion = versionRequest.setVersionByAcceptFormat(headers)
 
   t.deepEqual(resultingVersion, versionNumber)
@@ -177,9 +192,11 @@ test('we can handle, if the custom function returns a boolean', t => {
 })
 
 test('we can handle, if the custom function returns an object', t => {
-  const versionNumber = {alpha: true}
+  const versionNumber = { alpha: true }
   t.context.req.headers['accept'] = 1
-  const middleware = versionRequest.setVersionByAcceptHeader(v => { return versionNumber })
+  const middleware = versionRequest.setVersionByAcceptHeader(v => {
+    return versionNumber
+  })
 
   middleware(t.context.req, {}, () => {
     t.deepEqual(t.context.req.version, JSON.stringify(versionNumber))
