@@ -59,7 +59,7 @@ app.listen(5000, () => console.log('Listening on port 5000'))
 
 and testing curl:
 ```curl
-curl curl 0.0.0.0:5000/test/v2.0.0
+curl 0.0.0.0:5000/test/v2.0.0
 ```
 
 ### API versioning based on Query String
