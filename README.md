@@ -21,8 +21,6 @@ npm install express-versions
 npm run test
 ```
 
-Create a map where the key is the version of the supported controller, and the value is a regular ExpressJS route function signature. 
-
 ## Usage
 ### API versioning based on URI
 
