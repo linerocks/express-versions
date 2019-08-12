@@ -7,7 +7,7 @@
 
 ## What is this?
 
-This npm package provides an ExpressJS middleware that sets the request object with a `version` property by parsing a request HTTP header.  This is extension package from [express-version-route](https://www.npmjs.com/package/express-version-route) and [express-version-request](https://www.npmjs.com/package/express-version-request)
+This npm package provides an ExpressJS middleware that sets the request object with a `version` property.  This is an extension package from [express-version-route](https://www.npmjs.com/package/express-version-route) and [express-version-request](https://www.npmjs.com/package/express-version-request)
 
 ## Installation
 
@@ -75,7 +75,7 @@ const {versionRouter, versionRequest} = require('express-versions')
 
 const app = express()
 
-app.use(versionRequest.setVersionByURI())
+app.use(versionRequest.setVersionByQueryParam())
 
 const routesMap = new Map()
 
@@ -91,7 +91,7 @@ routesMap.set('default', (req, res, next) => {
   return res.status(200).json({'message': 'hello to you from default version'})
 })
 
-app.get('/test/:version', versionRouter.route(routesMap))
+app.get('/test', versionRouter.route(routesMap))
 
 
 app.listen(5000, () => console.log('Listening on port 5000'))
@@ -145,14 +145,18 @@ curl --header "x-api-version: 2.0.0"  0.0.0.0:5000/test
 
 ## How it works : Client-Server flow
 
-1. An API client will send a request to your API endpoint. Depends on the schema you defining the version, either using URI, header, or query string; your request are required to specify certain version. 
+1. An API client will send a request to your API endpoint. Depends on the schema you defining the version, either using URI, header, or query string; your request are required to specify certain version. The common methods are either : 
+
 ```bash
 curl https://www.example.com/api/v1.0.0/users
+
 curl --header "x-api-version: 1.0.0" https://www.example.com/api/users
+
 curl https://www.example.com/api/users?v=1.0.0
 ```
 
 2. The `express-versions` library will parse the api version and sets ExpressJS's `req.version` property to 1.0.0.
+
 3. The `express-version` library, when implemented like the usage example above will match the 1.0 route version because semver will match 1.0.0 to 1.0, and then reply with the JSON payload `{'message': 'hello to you version 1.0.0'}`.  
 
 ## [How to Version](https://restfulapi.net/versioning/)
@@ -166,7 +170,7 @@ REST doesn’t provide for any specific versioning guidelines but the more commo
 
 - **Query String Versioning** : An extension to URI noted by question mark `?` allow you to add variables in to complete URI. For example : `http://api.example.com?version=1.0.0` or `http://abc.com/user?id=U2hfg49823d&v=2.0.0`
 
-### Why API Versioning at all ?
+## Why API Versioning at all ?
 
 Upgrading APIs with some breaking change would lead to breaking existing products, services or even your own frontend web application which is dependent on your API contract. By implementing API versioning you can ensure that changes you make to your underlying API endpoints are not affecting systems that consume them, and using a new version of an API is an opt-in on the consumer. [read more...](https://apigee.com/about/blog/technology/restful-api-design-tips-versioning)
 

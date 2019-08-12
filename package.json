@@ -1,6 +1,6 @@
 {
   "name": "express-versions",
-  "version": "0.0.1",
+  "version": "0.0.1a",
   "description": "Express REST API versioning library",
   "main": "index.js",
   "scripts": {
