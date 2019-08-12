@@ -11,10 +11,10 @@ class versionRequest {
     }
   }
 
-  static setVersionByURI (versionName = 'v') {
+  static setVersionByURI (regexPattern = `/v(\\d+.?\\d*.?\\d*.?\\d*.?\\d*)/`) {
     return (req, res, next) => {
       if (req) {
-        const r = new RegExp(`/${versionName}(\\d+.?\\d*.?\\d*.?\\d*.?\\d*)/`)
+        const r = new RegExp(regexPattern)
 
         let urlEndpoint = req.originalUrl.endsWith('/')
           ? req.originalUrl
